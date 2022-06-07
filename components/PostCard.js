@@ -5,10 +5,11 @@ import {
   RetweetOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
-import { Avatar, Button, Card, Popover } from "antd";
+import { Avatar, Button, Card, Comment, List, Popover } from "antd";
 import PropTypes from "prop-types";
 import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
+import CommentForm from "./CommentForm";
 import PostImages from "./Postimages";
 
 const PostCard = ({ post }) => {
@@ -62,7 +63,25 @@ const PostCard = ({ post }) => {
           description={post.content}
         />
       </Card>
-      {commentFormOpened && <div>댓글 부분</div>}
+      {commentFormOpened && (
+        <div>
+          <CommentForm post={post} />
+          <List
+            header={`${post.Comments.length}개의 댓글`}
+            itemLayout="horizontal"
+            dataSource={post.Comments}
+            renderItem={(item) => (
+              <li>
+                <Comment
+                  author={item.User.nickname}
+                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                />
+                content={item.content}
+              </li>
+            )}
+          />
+        </div>
+      )}
       {/* <CommentForm /> */}
       {/* <Comments /> */}
     </div>

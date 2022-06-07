@@ -18,7 +18,7 @@ export const initialState = {
           src: "https://gimg.gilbut.co.kr/book/BN001998/rn_view_BN001998.jpg",
         },
       ],
-      Comment: [
+      Comments: [
         {
           User: {
             nickname: "nero",
