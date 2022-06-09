@@ -19,6 +19,7 @@ function* addPost(action) {
     yield delay(1000);
     yield put({
       type: ADD_POST_SUCCESS,
+      data: action.data,
       // data: result.data,
     });
   } catch (err) {
@@ -39,6 +40,7 @@ function* addComment(action) {
     yield delay(1000);
     yield put({
       type: ADD_COMMENT_SUCCESS,
+      data: action.data,
       // data: result.data,
     });
   } catch (err) {
