@@ -8,12 +8,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      //belongsTo 작성시 생기는 것들
+      //UserId:1
+      //PostId:3
     },
     {
       charset: "utf8mb4",
       collate: "utf8mb4_general_ci", //한글 저장
     }
   );
-  Comment.associate = (db) => {};
+  Comment.associate = (db) => {
+    db.Comment.belongsTo(db.User);
+    db.Comment.belongsTo(db.Post);
+  };
   return Comment;
 };
