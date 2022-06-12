@@ -23,6 +23,7 @@ passportConfig();
 app.use(
   cors({
     origin: true,
+    credentials: true, //쿠키도 함께 전달하려면 true
   })
 );
 
