@@ -28,8 +28,30 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
+  UPLOAD_IMAGES_FAILURE,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
+
+function uploadImagesAPI(data) {
+  return axios.post("/post/images", data); //form 데이터는 json 형식이 아닌 그대로의 data로 넣어준다.
+}
+
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
 
 function addPostAPI(data) {
   return axios.post("/post", { content: data });
@@ -156,6 +178,10 @@ function* addComment(action) {
   }
 }
 
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
+
 function* watchLikePost() {
   yield takeLatest(LIKE_POST_REQUEST, likePost);
 }
@@ -180,6 +206,7 @@ function* watchAddComment() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchUploadImages),
     fork(watchLikePost),
     fork(watchUnlikePost),
     fork(watchAddPost),
