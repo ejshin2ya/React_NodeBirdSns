@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
@@ -29,18 +30,16 @@ const Home = () => {
 
   useEffect(() => {
     function onScroll() {
-      console.log(
-        window.scrollY,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight
-      );
       if (
-        window.scrollY + document.documentElement.clientHeight >
+        window.pageYOffset + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePost && !loadPostsLoading) {
+          console.log(loadPostsLoading);
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -49,7 +48,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePost, loadPostsLoading]);
+  }, [hasMorePost, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>
