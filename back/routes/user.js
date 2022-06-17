@@ -42,6 +42,46 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:userId", async (req, res, next) => {
+  // GET /user/10000
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: {
+        exclude: ["password"],
+      }, //password 가져오고 싶지 않을 때
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJson();
+      data.Posts = data.Posts.length; //개인정보 침해 예빵
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {

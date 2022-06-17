@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
+import axios from "axios";
 
 import AppLayout from "../components/AppLayout";
 import PostCard from "../components/PostCard";
@@ -57,6 +58,12 @@ const Home = () => {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
+      const cookie = req ? req.headers.cookie : "";
+      //쿠키 공유 막기위해
+      axios.defaults.headers.Cookie = "";
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
       store.dispatch({
         type: LOAD_MY_INFO_REQUEST,
       });
