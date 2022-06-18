@@ -55,24 +55,46 @@ const Home = () => {
   );
 };
 
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) =>
+//     async ({ req, res, ...etc }) => {
+//       const cookie = req ? req.headers.cookie : "";
+//       //쿠키 공유 막기위해
+//       axios.defaults.headers.Cookie = "";
+//       if (req && cookie) {
+//         axios.defaults.headers.Cookie = cookie;
+//       }
+//       store.dispatch({
+//         type: LOAD_MY_INFO_REQUEST,
+//       });
+//       store.dispatch({
+//         type: LOAD_POSTS_REQUEST,
+//       });
+//       //request 후 success가 되고 나서 돌아오도록 기다리는 코드
+//       store.dispatch(END);
+//       await store.sagaTask.toPromise();
+//     }
+// );
+
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req, res, ...etc }) => {
-      const cookie = req ? req.headers.cookie : "";
-      //쿠키 공유 막기위해
-      axios.defaults.headers.Cookie = "";
-      if (req && cookie) {
-        axios.defaults.headers.Cookie = cookie;
-      }
-      store.dispatch({
-        type: LOAD_MY_INFO_REQUEST,
-      });
-      store.dispatch({
-        type: LOAD_POSTS_REQUEST,
-      });
-      //request 후 success가 되고 나서 돌아오도록 기다리는 코드
-      store.dispatch(END);
-      await store.sagaTask.toPromise();
+  async (context) => {
+    console.log("getServerSideProps start");
+    console.log(context.req.headers);
+    const cookie = context.req ? context.req.headers.cookie : "";
+    axios.defaults.headers.Cookie = "";
+    if (context.req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
     }
+    context.store.dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+    context.store.dispatch({
+      type: LOAD_POSTS_REQUEST,
+    });
+    context.store.dispatch(END);
+    console.log("getServerSideProps end");
+    await context.store.sagaTask.toPromise();
+  }
 );
+
 export default Home;
